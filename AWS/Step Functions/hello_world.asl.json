@@ -1,0 +1,18 @@
+{
+    "Comment": "Exploring  State Machines",
+    "StartAt": "Set Variables and State Output",
+    "States": {
+        "Set Variables and State Output": {
+            "Type": "Pass",
+            "End": true,
+            "Output": {
+                "tempreature": "{% $states.input.payload.temperature %}",
+                "humidity": "{% $states.input.payload.humidity %}",
+                "unit": "{% $states.input.payload.unit %}",
+                "battery_level": "{% $states.input.payload.batteryLevel %}",
+                "signal_strength": "{% $states.input.payload.signalStrength %}"
+            }
+        }
+    },
+    "QueryLanguage": "JSONata"
+}
