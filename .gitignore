@@ -208,6 +208,7 @@ __marimo__/
 
 # Terraform
 .terraform/
+.terraform.lock.hcl
 
 # Docker volumn host path
 volumes/postgres-data/
