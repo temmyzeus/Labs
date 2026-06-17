@@ -13,7 +13,7 @@ Schema: transaction records
   - timestamp        : str   (ISO-8601)
 
 Usage:
-    python file_drop_simulator.py \
+    python generate_upload_data_file.py \
         --bucket my-landing-bucket \
         --client-id client-a \
         --prefix raw/        # optional S3 key prefix
@@ -94,16 +94,17 @@ def upload_to_s3(
 
 
 def main(cli_args: argparse.Namespace) -> None:
-    # Randomly pick the file format — simulates unpredictable client drops
-    fmt = random.choice(["csv", "json"])
 
-    # Build a timestamped filename so repeated runs never collide in S3
-    ts       = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    filename = f"{args.client_id}_{ts}.{fmt}"
-    s3_key   = f"{args.prefix.rstrip('/')}/{filename}"
-    no_files = int(args.no_files)
+    num_uploaded_files: int = 0
+    no_files: int = int(args.no_files)
 
     for _ in range(no_files):
+        fmt = random.choice(["csv", "json"])
+
+        ts       = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        filename = f"{args.client_id}_{ts}.{fmt}"
+        s3_key   = f"{args.prefix.rstrip('/')}/{filename}"
+    
         # Generate records
         records = generate_records(args.client_id)
         print(f"📄  Format     : {fmt.upper()}")
@@ -119,6 +120,9 @@ def main(cli_args: argparse.Namespace) -> None:
             content_type = "application/json"
 
         upload_to_s3(data, args.bucket, s3_key, content_type)
+        num_uploaded_files += 1
+
+    print(f"Successfully Uploaded {num_uploaded_files} files(s) to s3://{args.bucket}/{args.prefix}")
 
 
 if __name__ == "__main__":
