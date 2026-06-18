@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 6.37.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "2.8.0"
+    }
   }
   backend "s3" {
     bucket       = "terraform-state-files-409021554022"
