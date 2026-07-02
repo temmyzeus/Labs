@@ -1,4 +1,8 @@
 
+data "aws_iam_policy" "aws_lambda_sqs_execution_role_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
+}
+
 resource "aws_iam_role" "file_processor_role" {
   name        = "FileIngestionSQSToLambdaFunctionRole"
   description = "Role for the lambda function which processes the files sent by client."
@@ -17,4 +21,9 @@ resource "aws_iam_role" "file_processor_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "file_processor_role_policy_attachment" {
+  role       = aws_iam_role.file_processor_role.name
+  policy_arn = data.aws_iam_policy.aws_lambda_sqs_execution_role_policy.arn
 }
