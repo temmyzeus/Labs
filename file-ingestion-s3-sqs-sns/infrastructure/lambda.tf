@@ -9,6 +9,10 @@ data "aws_ssm_parameter" "powertools" {
   name = "/aws/service/powertools/python/x86_64/python3.14/latest"
 }
 
+data "aws_ssm_parameter" "s3_wrangler" {
+  name = "/aws/service/aws-sdk-pandas/3.17.0/py3.14/x86_64/layer-arn"
+}
+
 resource "aws_lambda_function" "file_processor" {
   filename      = data.archive_file.archived_lambda_file.output_path
   function_name = "client-file-ingestion"
@@ -18,7 +22,10 @@ resource "aws_lambda_function" "file_processor" {
 
   runtime = "python3.14"
 
-  layers = [data.aws_ssm_parameter.powertools.value]
+  layers = [
+    data.aws_ssm_parameter.powertools.value,
+    data.aws_ssm_parameter.s3_wrangler.value
+  ]
 
   environment {
     variables = {
